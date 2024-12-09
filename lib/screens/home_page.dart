@@ -12,8 +12,12 @@ class _HomePageState extends State<HomePage> {
   @override
   @override
   void initState() {
+    WeatherService().getLocation().then((value) {
+      print(value);
+    }).catchError((error) {
+      print(error);
+    });
     super.initState();
-    WeatherService().getLocation().then((value) => print(value));
   }
 
   Widget build(BuildContext context) {
