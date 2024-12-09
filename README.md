@@ -2,7 +2,7 @@
 
 Bu proje, Flutter ile hava durumu bilgilerini API üzerinden çekerek kullanıcıya sunan basit bir uygulamadır. Uygulama, kullanıcının bulunduğu konumu alır ve bu konuma ait hava durumu bilgisini API isteği yaparak görüntüler.
 
-![Ekran görüntüsü 2024-05-10 160033]([https://github.com/MustafaOzkaya1/GUESS-GAME-WITH-FLUTTER/assets/115730418/9d833ab3-2bc1-429d-9b90-30f879d663f1](https://github.com/MustafaOzkaya1/hava_durumu_api_kullanimi/blob/main/assets/ss.jpg))
+![Ekran görüntüsü 2024-05-10 160033]([https://github.com/MustafaOzkaya1/hava_durumu_api_kullanimi/blob/main/assets/ss.jpg?raw=true))
 
 ---
 
