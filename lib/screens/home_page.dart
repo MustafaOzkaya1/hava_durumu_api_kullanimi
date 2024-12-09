@@ -9,23 +9,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
+  String? city;
+
   @override
   void initState() {
-    WeatherService().getLocation().then((value) {
-      print(value);
-    }).catchError((error) {
-      print(error);
-    });
+    WeatherService().getWeatherData();
     super.initState();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Dun bizi uzduler aga powerbank aldik ama '),
+            if (city != null)
+              Text('Sehir: $city')
+            else
+              CircularProgressIndicator(),
           ],
         ),
       ),

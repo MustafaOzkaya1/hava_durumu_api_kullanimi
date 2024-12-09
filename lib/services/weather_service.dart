@@ -1,26 +1,18 @@
-import 'package:geocoding/geocoding.dart';
+import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 
 class WeatherService {
-  Future<String> getLocation() async {
-    // Kullanicidan Konumu al
-    // Kullanicinin konumu acik mi kontrol ettik
-    final bool servideEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!servideEnabled) {
-      Future.error(
-          'Konum Servisiniz Kapali'); //Konum servisi kapaliysa hata don
-    }
-
-    //konum izni vermis mi kontrol ettik
-
-    LocationPermission permisson =
+  Future<String> _getCityName() async {
+    LocationPermission permission =
         await Geolocator.checkPermission(); //Konum izni kontrol et
 
-    if (permisson == LocationPermission.denied) {
-      permisson =
+    if (permission == LocationPermission.denied) {
+      permission =
           await Geolocator.requestPermission(); //Konum izni yoksa izin iste
-      if (permisson == LocationPermission.deniedForever) {
-        Future.error('Konum izni verilmedi'); //Konum izni verilmediyse hata don
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception(
+            'Konum izni verilmedi'); //Konum izni verilmediyse hata don
       }
     }
 
@@ -32,9 +24,30 @@ class WeatherService {
     final List<Placemark> placemark = await placemarkFromCoordinates(
         position.latitude, position.longitude); //Konum bilgilerini al
     //sehrimizin yerlesim noktasini kaydettik ve dondurduk
-    final String? city = placemark[0].locality; //Sehir bilgisini al
-    if (city == null)
-      Future.error('Sehir bulunamadi'); //Sehir bilgisi yoksa hata don
-    return city!; //Sehir bilgisini don
+    final String? city = placemark[0].administrativeArea; //Sehir bilgisini al
+    if (city == null) {
+      throw Exception('Sehir bulunamadi'); //Sehir bilgisi yoksa hata don
+    }
+    return city; //Sehir bilgisini don
+  }
+
+  Future<void> getWeatherData() async {
+    final String cityName = await _getCityName();
+    final String url =
+        'https://api.collectapi.com/weather/getWeather?data.lang=tr&data.city=${cityName}';
+    const Map<String, dynamic> headers = {
+      'authorization':
+          'authorization: apikey 4cmOw6fxVR9ZxWtZFMiUNQ:2bk6RcNfcGeRtYzeCYsE2o',
+      'content-type': 'application/json',
+    };
+
+    final dio = Dio();
+    final response = await dio.get(url, options: Options(headers: headers));
+
+    if (response.statusCode != 200) {
+      throw Exception('Hava durumu bilgisi getirilemedi');
+    }
+
+    print(response.data);
   }
 }
