@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:hava_durumu_api_kullanimi/models/weather_model.dart';
 
 class WeatherService {
   Future<String> _getCityName() async {
@@ -31,13 +32,12 @@ class WeatherService {
     return city; //Sehir bilgisini don
   }
 
-  Future<void> getWeatherData() async {
+  Future<List<WeatherModel>> getWeatherData() async {
     final String cityName = await _getCityName();
     final String url =
         'https://api.collectapi.com/weather/getWeather?data.lang=tr&data.city=${cityName}';
     const Map<String, dynamic> headers = {
-      'authorization':
-          'authorization: apikey 4cmOw6fxVR9ZxWtZFMiUNQ:2bk6RcNfcGeRtYzeCYsE2o',
+      'authorization': 'apikey 4cmOw6fxVR9ZxWtZFMiUNQ:2bk6RcNfcGeRtYzeCYsE2o',
       'content-type': 'application/json',
     };
 
@@ -48,6 +48,10 @@ class WeatherService {
       throw Exception('Hava durumu bilgisi getirilemedi');
     }
 
-    print(response.data);
+    final List list = response.data['result'];
+    final List<WeatherModel> weatherList =
+        list.map((e) => WeatherModel.fromJson(e)).toList().toList();
+
+    return weatherList;
   }
 }
